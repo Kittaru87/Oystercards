@@ -15,7 +15,7 @@ describe Oystercard do
     end
 
     it "should tell the customer how much they've topped up by" do
-      expect(subject.top_up(20)).to eq "You have topped up by £20"
+      expect(subject.top_up(20)).to eq "Your balance is now £20"
     end
 
     it "should raise an error if balance limit is exceeded" do
@@ -37,6 +37,22 @@ describe Oystercard do
     end
 
   end
+
+  describe "#in_journey" do
+
+    it { is_expected.to respond_to :in_journey? }
+
+    it "when touching in, the oystercard state is true" do
+      subject.touch_in
+      expect(subject).to have_attributes(status: true)
+    end
+    it "when touching out, the oystercard state is false" do
+      subject.touch_out
+      expect(subject).to have_attributes(status: false) 
+    end
+
+  end
+
 
     
 end
