@@ -1,4 +1,4 @@
-require_relative 'oyster'
+require_relative 'Oystercard'
 
 class Station
 
