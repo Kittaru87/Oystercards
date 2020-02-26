@@ -1,51 +1,53 @@
+require_relative 'station'
 
-class Oystercard
+class OysterCard
+	attr_reader :balance, :entry_station, :exit_station, :track_history
+	DEFAULT_BALANCE = 0
+	MAXIMUM_BALANCE = 90
+	MINIMUM_FARE = 1
 
-  attr_reader :balance, :max_balance, :status
+	def initialize(balance = DEFAULT_BALANCE)
+		@balance = balance
+		@entry_station 
+		@exit_station
+		@track_history = []
+	end
 
-  MAX_BALANCE = 90
+	def top_up(num)
+		fail "You cant top up more than #{MAXIMUM_BALANCE} balance" if (@balance + num) > MAXIMUM_BALANCE
+		@balance += num
+	end
 
-  def initialize
-    @balance = 0
-    @max_balance = MAX_BALANCE
-    @status = false
-  end
+	def touch_in(entry_station)
+		fail "You have insufficient funds" if @balance < MINIMUM_FARE 
+		@entry_station = entry_station
+		@exit_station = nil
+		"You have tapped into #{entry_station}"
+	end
 
-  def in_journey?
-    @status
-  end
+	def touch_out(exit_station)
+		deduct if in_journey?
+		record_journey(exit_station)
+		"You have tapped out of #{exit_station}"
+	end
 
-  def touch_in
-    @status = true
-  end
+	def in_journey?
+		raise 'You are not in journey' unless @entry_station
+		true if @entry_station
+	end
 
-  def touch_out
-    @status = false
-  end
+	private
 
-  def top_up(money)
-    @balance += money
-    limit_exceeded(money)
-    balance_message
-  end
+    def deduct
+		@balance -= MINIMUM_FARE
+	end
 
-  def deduct(fare)
-    @balance -= fare
-    balance_message
-  end  
+	def record_journey(exit_station)
+	   @track_history << {@entry_station => exit_station}
+	   @entry_station = nil 
+	   @exit_station = exit_station
+	end
 
-  
-  
-  
-  private
-
-  def limit_exceeded(money)
-    (@balance = @max_balance; raise "Top-up limit exceeded") if @balance > @max_balance
-  end
-
-  def balance_message
-    "Your balance is now £#{@balance}"
-  end
 
 
 end
