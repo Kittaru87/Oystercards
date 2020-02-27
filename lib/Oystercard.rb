@@ -1,53 +1,55 @@
 require_relative 'station'
+require_relative 'journey'
 
-class OysterCard
-	attr_reader :balance, :entry_station, :exit_station, :track_history
+class Oystercard
+	attr_reader :balance, :track_history, :journey
 	DEFAULT_BALANCE = 0
 	MAXIMUM_BALANCE = 90
 	MINIMUM_FARE = 1
 
 	def initialize(balance = DEFAULT_BALANCE)
 		@balance = balance
-		@entry_station 
-		@exit_station
 		@track_history = []
+		@journey = Journey.new
 	end
 
 	def top_up(num)
-		fail "You cant top up more than #{MAXIMUM_BALANCE} balance" if (@balance + num) > MAXIMUM_BALANCE
+		no_topup(num)
 		@balance += num
+		topup_message(num)
 	end
 
 	def touch_in(entry_station)
-		fail "You have insufficient funds" if @balance < MINIMUM_FARE 
-		@entry_station = entry_station
-		@exit_station = nil
-		"You have tapped into #{entry_station}"
+		no_funds
+		@journey.start_journey(entry_station)
+		touch_in_message(entry_station)
 	end
 
 	def touch_out(exit_station)
-		deduct if in_journey?
-		record_journey(exit_station)
-		"You have tapped out of #{exit_station}"
-	end
-
-	def in_journey?
-		raise 'You are not in journey' unless @entry_station
-		true if @entry_station
+		@journey.end_journey(exit_station)
+		@balance -= @journey.fare
+		touch_out_message(exit_station)
 	end
 
 	private
 
-    def deduct
-		@balance -= MINIMUM_FARE
+	def no_funds
+		fail "You have insufficient funds" if @balance < MINIMUM_FARE
 	end
 
-	def record_journey(exit_station)
-	   @track_history << {@entry_station => exit_station}
-	   @entry_station = nil 
-	   @exit_station = exit_station
+	def no_topup(num)
+		fail "You cant top up more than #{MAXIMUM_BALANCE} balance" if (@balance + num) > MAXIMUM_BALANCE
 	end
 
+	def topup_message(num)
+		"You have topped up by £#{num}"
+	end
 
+	def touch_in_message(entry_station)
+		"You have tapped into #{entry_station}"
+	end
 
+	def touch_out_message(exit_station)
+		"You have tapped out of #{exit_station}"
+	end
 end
