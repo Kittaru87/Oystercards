@@ -75,3 +75,27 @@ $ rspec --init
 ```
 * This software runs in irb (or Ruby REPL of choice run through the terminal)
 
+### Example run-through
+```
+>> irb
+2.6.3 :001 > require './Oystercard.rb'
+ => true 
+2.6.3 :002 > oystercard = Oystercard.new
+ => #<Oystercard:0x00007fbc670a93f0 @balance=0, @track_history=[]> 
+2.6.3 :003 > oystercard.top_up(50)
+ => "You have topped up by £50" 
+2.6.3 :004 > oystercard.touch_in("Peckham Rye")
+ => "You have tapped into Peckham Rye" 
+2.6.3 :005 > oystercard.in_journey?
+ => true 
+2.6.3 :006 > oystercard.touch_out("Whitechapel")
+ => "You have tapped out of Whitechapel" 
+2.6.3 :007 > oystercard.balance
+ => 49 
+2.6.3 :008 > oystercard.track_history
+ => [{"Peckham Rye"=>"Whitechapel"}] 
+ 2.6.3 :009 > oystercard
+ => #<Oystercard:0x00007fbc670a93f0 @balance=49, @track_history=[{"Peckham Rye"=>"Whitechapel"}]> 
+ ```
+ ## Challenges
+ This has been a good exercise for consolidating the skills and lessons learnt from the BorisBike and Airport challenges. The most hardest part of the project so far as been learning about forwarding and polymorphism - splitting up the classes then linking them all back together is so far proving hard.
